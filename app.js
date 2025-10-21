@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.onload = (e) => {
             previewImg.src = e.target.result;
             imagePreview.classList.remove('hidden');
-            previewPhoto.innerHTML = <img src=\"\" alt=\"Photo\" style=\"width: 100%; height: 100%; object-fit: cover;\">;
+            previewPhoto.innerHTML = `<img src="${e.target.result}" alt="Photo" style="width: 100%; height: 100%; object-fit: cover;">`;
         };
         reader.readAsDataURL(file);
     });
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         selectedFile = null;
         photoUploadInput.value = '';
         imagePreview.classList.add('hidden');
-        previewPhoto.innerHTML = '<span class=\"photo-placeholder\">📷</span>';
+        previewPhoto.innerHTML = '<span class="photo-placeholder">📷</span>';
     });
 
     wishForm.addEventListener('submit', async (e) => {
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (selectedFile) {
                 showStatus('Uploading your photo...', 'info');
                 const fileExt = selectedFile.name.split('.').pop();
-                const fileName = ${Date.now()}-.;
+                const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
                 
                 const { data: uploadData, error: uploadError } = await supabase.storage
                     .from('birthday-images')
@@ -140,13 +140,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (error) throw new Error('Failed to save wish: ' + error.message);
 
-            showStatus(Your birthday wish has been sent to !, 'success');
+            showStatus(`🎉 Your birthday wish has been sent to ${recipientName}!`, 'success');
             
             setTimeout(() => {
                 wishForm.reset();
                 selectedFile = null;
                 imagePreview.classList.add('hidden');
-                previewPhoto.innerHTML = '<span class=\"photo-placeholder\">📷</span>';
+                previewPhoto.innerHTML = '<span class="photo-placeholder">📷</span>';
                 previewName.textContent = 'YOUR NAME';
                 previewRecipient.textContent = 'RECIPIENT';
                 previewMessage.textContent = 'Your birthday wish will appear here...';
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showStatus(message, type) {
         statusMessage.textContent = message;
-        statusMessage.className = status-message status-;
+        statusMessage.className = `status-message status-${type}`;
         statusMessage.classList.remove('hidden');
         if (type === 'info' || type === 'error') {
             setTimeout(() => statusMessage.classList.add('hidden'), 5000);
