@@ -9,46 +9,56 @@
 <body>
     <div class="container">
         <!-- Header -->
-        <header class="header">
-            <img src="image/header.png" alt="Happy Birthday" class="header-image">
-            <h1 class="subtitle">Send Your Birthday Wishes to Cheata! 🎂</h1>
+        <header class="birthday-header">
+            <div class="header-decoration">
+                <span class="star star-1">✦</span>
+                <span class="star star-2">✦</span>
+                <span class="star star-3">✦</span>
+                <span class="star star-4">✦</span>
+            </div>
+            <div class="birthday-title">
+                <img src="image/header.png" alt="Happy Birthday" class="header-image">
+            </div>
         </header>
 
-        <!-- Main Form Section -->
-        <main class="main-section">
-            <div class="form-card">
-                <h2>✨ Create Your Birthday Wish</h2>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Form Card -->
+            <div class="creator-card">
+                <h2>✨ Send Your Birthday Wish to Cheata</h2>
                 
-                <form id="wishForm" class="wish-form">
+                <form id="wishForm" class="birthday-form">
                     <!-- Your Name -->
                     <div class="form-group">
                         <label for="yourName">Your Name *</label>
-                        <input type="text" id="yourName" required placeholder="Enter your name">
+                        <input type="text" id="yourName" name="yourName" required placeholder="Enter your name">
                     </div>
 
-                    <!-- Birthday Message -->
+                    <!-- Birthday Wish -->
                     <div class="form-group">
-                        <label for="wishMessage">Birthday Wish *</label>
-                        <textarea id="wishMessage" required placeholder="Write your birthday wish for Cheata..." rows="5"></textarea>
+                        <label for="wishMessage">Your Birthday Wish *</label>
+                        <textarea id="wishMessage" name="wishMessage" required placeholder="Write your heartfelt birthday wish for Cheata..." rows="5"></textarea>
                     </div>
 
                     <!-- Photo Upload -->
                     <div class="form-group">
-                        <label for="photoUpload">Add a Photo (Optional)</label>
-                        <input type="file" id="photoUpload" accept="image/*">
-                        <small class="hint">Max 5MB (JPG, PNG, GIF)</small>
+                        <label for="photoUpload">Add Your Photo (Optional)</label>
+                        <input type="file" id="photoUpload" name="photoUpload" accept="image/*">
+                        <small class="file-upload-hint">Max 5MB • JPG, PNG, GIF</small>
                     </div>
 
                     <!-- Image Preview -->
                     <div id="imagePreview" class="image-preview hidden">
                         <img id="previewImg" src="" alt="Preview">
-                        <button type="button" id="removeImage" class="btn-remove">Remove</button>
+                        <button type="button" id="removeImage" class="btn-remove">Remove Photo</button>
                     </div>
 
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn-submit" id="submitBtn">
-                        🎉 Send Birthday Wish
-                    </button>
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" id="submitBtn" class="btn btn-create">
+                            🎉 Send Birthday Wish
+                        </button>
+                    </div>
 
                     <!-- Status Message -->
                     <div id="statusMessage" class="status-message hidden"></div>
@@ -56,28 +66,50 @@
             </div>
 
             <!-- Live Preview Card -->
-            <div class="preview-card">
-                <h3>Preview Your Card</h3>
-                <div class="card-preview">
-                    <div class="card-header">
-                        <img src="image/header.png" alt="Happy Birthday" class="card-header-img">
+            <div class="card-display">
+                <h2>Preview Your Card 👀</h2>
+                <div class="birthday-card">
+                    <div class="card-border">
+                        <div class="card-content">
+                            <!-- Corner Decorations -->
+                            <div class="corner-decoration top-left"></div>
+                            <div class="corner-decoration top-right"></div>
+                            <div class="corner-decoration bottom-left"></div>
+                            <div class="corner-decoration bottom-right"></div>
+
+                            <!-- Card Header -->
+                            <div class="card-header">
+                                <div class="card-stars">
+                                    <span class="star">✦</span>
+                                    <span class="star">✦</span>
+                                    <span class="star">✦</span>
+                                </div>
+                                <img src="image/header.png" alt="Happy Birthday" class="card-header-image">
+                                <div class="card-subtitle">TO: CHEATA</div>
+                            </div>
+
+                            <!-- Card Photo -->
+                            <div class="card-image-container">
+                                <div class="card-image">
+                                    <div id="previewPhoto" class="photo-placeholder">📷</div>
+                                </div>
+                            </div>
+
+                            <!-- Card Message -->
+                            <div class="card-message">
+                                <p id="previewMessage">Your birthday wish will appear here...</p>
+                            </div>
+
+                            <!-- Card Footer -->
+                            <div class="card-footer">
+                                <div class="card-from">FROM: <span id="previewName">Your Name</span></div>
+                                <div class="card-date" id="previewDate">21-OCT-25</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-to">
-                        TO: <span class="highlight">CHEATA</span> 🎂
-                    </div>
-                    <div class="card-photo" id="previewPhoto">
-                        <span class="photo-placeholder">📷</span>
-                    </div>
-                    <div class="card-message" id="previewMessage">
-                        Your birthday wish will appear here...
-                    </div>
-                    <div class="card-from">
-                        FROM: <span id="previewName">Your Name</span>
-                    </div>
-                    <div class="card-date" id="previewDate">OCT 21, 2025</div>
                 </div>
             </div>
-        </main>
+        </div>
 
         <!-- Footer -->
         <footer class="footer">
@@ -87,7 +119,7 @@
 
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module" src="supabase-config.js"></script>
-    <script type="module" src="app.js"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

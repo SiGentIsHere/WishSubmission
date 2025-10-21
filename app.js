@@ -12,20 +12,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // DOM Elements
-    const form = document.getElementById('birthdayForm');
+    const form = document.getElementById('wishForm');
     const yourNameInput = document.getElementById('yourName');
-    const birthdayWishInput = document.getElementById('birthdayWish');
-    const friendPictureInput = document.getElementById('friendPicture');
+    const wishMessageInput = document.getElementById('wishMessage');
+    const photoUploadInput = document.getElementById('photoUpload');
     const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const removeImageBtn = document.getElementById('removeImage');
     const submitBtn = document.getElementById('submitBtn');
-    const resetBtn = document.getElementById('resetBtn');
     const statusMessage = document.getElementById('statusMessage');
 
     // Preview Card Elements
-    const cardYourName = document.getElementById('cardYourName');
-    const cardWishText = document.getElementById('cardWishText');
-    const cardImage = document.getElementById('cardImage');
-    const cardDate = document.getElementById('cardDate');
+    const previewName = document.getElementById('previewName');
+    const previewMessage = document.getElementById('previewMessage');
+    const previewPhoto = document.getElementById('previewPhoto');
+    const previewDate = document.getElementById('previewDate');
 
     // State
     let selectedFile = null;
@@ -35,10 +36,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Event Listeners
     yourNameInput.addEventListener('input', updatePreview);
-    birthdayWishInput.addEventListener('input', updatePreview);
-    friendPictureInput.addEventListener('change', handleImagePreview);
+    wishMessageInput.addEventListener('input', updatePreview);
+    photoUploadInput.addEventListener('change', handleImagePreview);
     form.addEventListener('submit', handleSubmit);
-    resetBtn.addEventListener('click', resetForm);
+    removeImageBtn.addEventListener('click', removeImage);
 
     // Update current date
     function updateDate() {
@@ -46,18 +47,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const dateString = now.toLocaleDateString('en-US', {
             day: '2-digit',
             month: 'short',
-            year: '2-digit'
-        }).replace(/\//g, '-').toUpperCase();
-        cardDate.textContent = dateString;
+            year: 'numeric'
+        }).toUpperCase();
+        previewDate.textContent = dateString;
     }
 
     // Real-time preview update
     function updatePreview() {
         const yourName = yourNameInput.value.trim();
-        const birthdayWish = birthdayWishInput.value.trim();
+        const wishMessage = wishMessageInput.value.trim();
 
-        cardYourName.textContent = yourName || 'YOU';
-        cardWishText.textContent = birthdayWish || 'Your beautiful birthday wish will appear here...';
+        previewName.textContent = yourName || 'Your Name';
+        previewMessage.textContent = wishMessage || 'Your birthday wish will appear here...';
     }
 
     // Handle image preview
@@ -68,14 +69,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Validate file type
         if (!file.type.startsWith('image/')) {
             showStatus('Please select a valid image file (JPG, PNG, GIF)', 'error');
-            friendPictureInput.value = '';
+            photoUploadInput.value = '';
             return;
         }
 
         // Validate file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
             showStatus('Image size should be less than 5MB!', 'error');
-            friendPictureInput.value = '';
+            photoUploadInput.value = '';
             return;
         }
 
@@ -84,30 +85,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show preview
         const reader = new FileReader();
         reader.onload = (e) => {
-            // Update card preview
-            cardImage.innerHTML = `<img src="${e.target.result}" alt="Preview" style="width: 100%; height: 100%; object-fit: cover;">`;
-
-            // Show thumbnail preview below form
-            imagePreview.innerHTML = `
-                <div class="preview-thumbnail">
-                    <img src="${e.target.result}" alt="Preview" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #bf5a5a;">
-                    <span class="preview-filename">${file.name}</span>
-                    <button type="button" class="btn-remove" onclick="removeImage()">✕</button>
-                </div>
-            `;
+            previewImg.src = e.target.result;
             imagePreview.classList.remove('hidden');
+            
+            // Update card preview photo
+            previewPhoto.innerHTML = `<img src="${e.target.result}" alt="Photo" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #bf5a5a; object-fit: cover;">`;
         };
         reader.readAsDataURL(file);
     }
 
     // Remove image
-    window.removeImage = function() {
+    function removeImage() {
         selectedFile = null;
-        friendPictureInput.value = '';
-        imagePreview.innerHTML = '';
+        photoUploadInput.value = '';
         imagePreview.classList.add('hidden');
-        cardImage.innerHTML = '<div class="image-placeholder">📷</div>';
-    };
+        previewPhoto.innerHTML = '<span class="photo-placeholder">📷</span>';
+    }
 
     // Handle form submission
     async function handleSubmit(e) {
@@ -115,10 +108,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Get form values
         const yourName = yourNameInput.value.trim();
-        const birthdayWish = birthdayWishInput.value.trim();
+        const wishMessage = wishMessageInput.value.trim();
 
         // Validation
-        if (!yourName || !birthdayWish) {
+        if (!yourName || !wishMessage) {
             showStatus('Please fill in all required fields!', 'error');
             return;
         }
@@ -128,13 +121,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        if (birthdayWish.length < 10) {
+        if (wishMessage.length < 10) {
             showStatus('Please write a longer birthday wish (at least 10 characters)', 'error');
             return;
         }
 
         // Disable submit button
-        setLoading(true);
+        submitBtn.disabled = true;
+        submitBtn.textContent = '⏳ Sending...';
         showStatus('Uploading your birthday wish...', 'info');
 
         try {
@@ -150,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showStatus('Saving your wish...', 'info');
             await saveWishToDatabase({
                 yourName,
-                birthdayWish,
+                wishMessage,
                 imageUrl
             });
 
@@ -167,7 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error submitting wish:', error);
             showStatus(`❌ Failed to send wish: ${error.message}`, 'error');
         } finally {
-            setLoading(false);
+            submitBtn.disabled = false;
+            submitBtn.textContent = '🎉 Send Birthday Wish';
         }
     }
 
@@ -203,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 {
                     friend_name: 'Cheata',
                     your_name: wishData.yourName,
-                    birthday_wish: wishData.birthdayWish,
+                    birthday_wish: wishData.wishMessage,
                     image_url: wishData.imageUrl || '',
                     created_at: new Date().toISOString()
                 }
@@ -222,33 +217,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function resetForm() {
         form.reset();
         selectedFile = null;
-        imagePreview.innerHTML = '';
         imagePreview.classList.add('hidden');
-
-        // Reset preview card
-        cardYourName.textContent = 'YOU';
-        cardWishText.textContent = 'Your beautiful birthday wish will appear here...';
-        cardImage.innerHTML = '<div class="image-placeholder">📷</div>';
-
+        previewPhoto.innerHTML = '<span class="photo-placeholder">📷</span>';
+        previewName.textContent = 'Your Name';
+        previewMessage.textContent = 'Your birthday wish will appear here...';
         statusMessage.classList.add('hidden');
-    }
-
-    // Set loading state
-    function setLoading(isLoading) {
-        const btnText = submitBtn.querySelector('.btn-text');
-        const btnLoader = submitBtn.querySelector('.btn-loader');
-
-        if (isLoading) {
-            submitBtn.disabled = true;
-            resetBtn.disabled = true;
-            btnText.classList.add('hidden');
-            btnLoader.classList.remove('hidden');
-        } else {
-            submitBtn.disabled = false;
-            resetBtn.disabled = false;
-            btnText.classList.remove('hidden');
-            btnLoader.classList.add('hidden');
-        }
     }
 
     // Show status message
