@@ -432,17 +432,6 @@ body {
     position: relative;
 }
 
-/* 4 Stars Decoration */
-.card-footer::before {
-    content: '✦ ✦ ✦ ✦';
-    display: block;
-    text-align: center;
-    color: var(--primary);
-    font-size: 14px;
-    margin-bottom: 10px;
-    letter-spacing: 8px;
-}
-
 .card-from {
     font-weight: 600;
     font-style: italic;
@@ -459,6 +448,17 @@ body {
     font-weight: 500;
     color: var(--text-light);
     font-size: 13px;
+}
+
+/* 4 Stars Decoration - Below Date, Centered */
+.card-footer::after {
+    content: '✦ ✦ ✦ ✦';
+    display: block;
+    text-align: center;
+    color: var(--primary);
+    font-size: 14px;
+    margin-top: 10px;
+    letter-spacing: 8px;
 }
 
 /* Footer */

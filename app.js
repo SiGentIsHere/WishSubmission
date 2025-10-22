@@ -46,7 +46,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Real-time preview - Recipient Name
     recipientNameInput.addEventListener('input', () => {
         const recipient = recipientNameInput.value.trim();
-        previewRecipient.textContent = recipient.toUpperCase() || 'RECIPIENT';
+        // Capitalize first letter of each word
+        const capitalized = recipient.split(' ').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        ).join(' ');
+        previewRecipient.textContent = capitalized || 'Recipient';
     });
 
     // Real-time preview - Message
