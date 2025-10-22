@@ -328,6 +328,12 @@ body {
     position: relative;
 }
 
+.card-header .star {
+    position: static;
+    color: var(--primary);
+    font-size: 16px;
+}
+
 .card-stars {
     display: flex;
     justify-content: center;
